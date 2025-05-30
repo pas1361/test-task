@@ -26,8 +26,8 @@
 
 ## 🛠️ Технологический стек
 
-- **Backend**: Python 3.9, FastAPI
-- **Frontend**: HTML5, CSS3, JavaScript
+- **Backend**: Python 3.13, FastAPI
+- **Frontend**: HTML, CSS, JavaScript
 - **Инфраструктура**: Docker
 - **API**: Open-Meteo Weather API
 
