@@ -35,6 +35,8 @@
 docker pull pas1361/pas-weather-app
 docker run -d -p 8000:8000 pas1361/pas-weather-app
 
+bash```
+
 
 После запуска откройте в браузере:
 Основное приложение: http://127.0.0.1:8000
