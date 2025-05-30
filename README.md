@@ -1,12 +1,10 @@
-# 🌦️ Weather Forecast Application
+# 🌦️ Pas Weather Application
 
 **Тестовое задание для О-Комплекс**
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/pas1361/pas-weather-app?style=flat-square)](https://hub.docker.com/r/pas1361/pas-weather-app)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue?style=flat-square)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/Framework-FastAPI-green?style=flat-square)](https://fastapi.tiangolo.com)
-
-<img src="https://i.imgur.com/JDQO4EL.png" alt="Weather App Screenshot" width="800"/>
 
 ## 🚀 Особенности проекта
 
