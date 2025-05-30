@@ -52,3 +52,25 @@
 📞 **Телефон**: +7 (952) 606-66-07  
 
 Docker Hub: [pas1361/pas-weather-app](https://hub.docker.com/r/pas1361/pas-weather-app)
+
+
+## 📞 Контактная информация
+
+**Автор**: Первишко Александр Сергеевич  
+📧 **Email**: [pervishko@alexandr.by](mailto:pervishko@alexandr.by)  
+📞 **Телефон**: [+7 (952) 606-66-07](tel:+79526066607)  
+💼 **LinkedIn**: [Ваш профиль](https://linkedin.com/in/ваш-профиль) (опционально)  
+
+## 🐳 Docker Hub
+
+[![Docker Image](https://img.shields.io/badge/Docker%20Image-pas1361/pas--weather--app-2496ED?style=for-the-badge&logo=docker)](https://hub.docker.com/r/pas1361/pas-weather-app)
+
+🔗 **Ссылка на образ**: [https://hub.docker.com/r/pas1361/pas-weather-app](https://hub.docker.com/r/pas1361/pas-weather-app)
+
+## 📜 Лицензия
+
+Этот проект распространяется под лицензией [MIT License](LICENSE).
+
+---
+
+[⬆️ Наверх](#-pas-weather-application) | [🚀 Запуск через Docker](#-запуск-через-docker)
