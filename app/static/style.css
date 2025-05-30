@@ -1,0 +1,166 @@
+/* Общие стили */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #222;
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #222;
+}
+
+/* Форма */
+form#weather-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+input#city {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+input#city:focus {
+    outline: none;
+    border-color: #4A90E2;
+    box-shadow: 0 0 8px rgba(74,144,226,0.4);
+}
+
+/* Список подсказок */
+ul#suggestions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 10;
+    display: none; /* скрываем по умолчанию */
+}
+
+ul#suggestions li {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+ul#suggestions li:hover {
+    background-color: #f0f8ff;
+}
+
+/* Кнопка */
+button[type="submit"] {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #357ABD;
+}
+
+/* Блок с результатом */
+#result {
+    margin-top: 30px;
+}
+
+/* Ошибки */
+.error {
+    color: #b00020;
+    background-color: #fddede;
+    border: 1px solid #b00020;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+/* Блок погоды */
+.weather-block {
+    background-color: #f7f9fc;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+}
+
+.weather-block h3 {
+    margin: 0 0 12px 0;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.weather-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.weather-icon {
+    width: 50px;
+    height: 50px;
+}
+
+.weather-block p {
+    margin: 5px 0;
+    font-size: 15px;
+    color: #444;
+}
+
+/* Блок о городе */
+.city-info {
+    background-color: #f7f9fc;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+}
+
+.city-info h2 {
+    margin: 0 0 12px 0;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.city-info p {
+    margin: 5px 0;
+    font-size: 15px;
+    color: #444;
+}
+
+

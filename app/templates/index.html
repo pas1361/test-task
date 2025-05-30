@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Прогноз погоды</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<div class="container">
+    <h1>Погода в городе</h1>
+    <form id="weather-form" autocomplete="off">
+        <input type="text" id="city" name="city" placeholder="Введите название города" required />
+        <ul id="suggestions" class="suggestions"></ul>
+        <button type="submit">Узнать погоду</button>
+    </form>
+    <div id="result"></div>
+    <h4>Тестовое задание выполнил Первишко Александр</h4>
+</div>
+
+<script>
+let debounceTimer;
+const input = document.getElementById("city");
+const suggestions = document.getElementById("suggestions");
+
+// Проверка localStorage на наличие сохраненного города
+document.addEventListener('DOMContentLoaded', () => {
+    const savedCity = localStorage.getItem('lastCity');
+    if (savedCity) {
+        const confirmWeather = confirm(`Вы ранее проверяли погоду в городе ${savedCity}. Хотите посмотреть погоду снова?`);
+        if (confirmWeather) {
+            input.value = savedCity;
+            fetchWeather(savedCity);
+        }
+    }
+});
+
+input.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
+    const query = input.value.trim();
+    if (query.length < 2) {
+        suggestions.style.display = "none";
+        return;
+    }
+
+    debounceTimer = setTimeout(() => {
+        fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=ru&format=json`)
+            .then(res => res.json())
+            .then(data => {
+                suggestions.innerHTML = "";
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(city => {
+                        const li = document.createElement("li");
+                        li.textContent = `${city.name}, ${city.country}`;
+                        li.addEventListener("click", () => {
+                            input.value = city.name;
+                            suggestions.style.display = "none";
+                        });
+                        suggestions.appendChild(li);
+                    });
+                    suggestions.style.display = "block";
+                } else {
+                    suggestions.style.display = "none";
+                }
+            })
+            .catch(() => {
+                suggestions.style.display = "none";
+            });
+    }, 300);
+});
+
+document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+        suggestions.style.display = "none";
+    }
+});
+
+function formatTime(dateStr) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function addHours(dateStr, hours) {
+    const d = new Date(dateStr);
+    d.setHours(d.getHours() + hours);
+    return d;
+}
+
+function findClosestIndex(timesArray, targetTime) {
+    const targetMs = new Date(targetTime).getTime();
+    let closestIdx = 0;
+    let minDiff = Infinity;
+    timesArray.forEach((timeStr, idx) => {
+        const timeMs = new Date(timeStr).getTime();
+        const diff = Math.abs(timeMs - targetMs);
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestIdx = idx;
+        }
+    });
+    return closestIdx;
+}
+
+function renderWeatherBlock(title, data, baseTime=null, offsetHours=0) {
+    if (!data) return "";
+    let timeDisplay = "";
+    if (baseTime) {
+        const newTime = addHours(baseTime, offsetHours);
+        timeDisplay = ` (${newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;
+    } else if (data.time) {
+        timeDisplay = ` (${formatTime(data.time)})`;
+    }
+
+    return `
+    <div class="weather-block">
+        <h3>${title}${timeDisplay}</h3>
+        <div class="weather-row">
+            <img src="/static/icons/${data.icon}.png" alt="${data.weather_description}" class="weather-icon" />
+            <strong>${data.weather_description}</strong>
+        </div>
+        <p><strong>Температура:</strong> ${data.temperature} °C</p>
+        ${data.apparent_temperature !== undefined && data.apparent_temperature !== null ? `<p><strong>Ощущается как:</strong> ${data.apparent_temperature} °C</p>` : ""}
+        ${data.humidity !== undefined && data.humidity !== null ? `<p><strong>Влажность:</strong> ${data.humidity}%</p>` : ""}
+        <p><strong>Ветер:</strong> ${data.wind_speed} км/ч, ${(data.wind_speed / 3.6).toFixed(2)} м/с, направление — ${data.wind_direction}</p>
+    </div>`;
+}
+
+function fetchWeather(city) {
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "Загрузка...";
+
+    fetch(`/api/weather/${encodeURIComponent(city)}`)
+        .then(res => res.json())
+        .then(data => {
+
+            console.log(data);
+            const currentTime = data.current.time || new Date().toISOString();
+            let current = data.current;
+            if (data.hourly && data.hourly.relative_humidity_2m && data.hourly.time) {
+                const idx = findClosestIndex(data.hourly.time, current.time);
+                if (idx !== -1) {
+                    current.humidity = data.hourly.relative_humidity_2m[idx];
+                    current.apparent_temperature = data.hourly.apparent_temperature ? data.hourly.apparent_temperature[idx] : null;
+                }
+            }
+
+            // Получаем информацию о городе
+            const cityName = data.location.name;
+            const country = data.location.country;
+            const latitude = data.location.latitude;
+            const longitude = data.location.longitude;
+            const timezone = data.location.timezone || "Неизвестен";
+            const utc_offset = data.location.utc_offset;
+
+            resultDiv.innerHTML = `
+                <div class="city-info">
+                    <h2>Информация о городе:</h2>
+                    <p><strong>Город:</strong> ${cityName}</p>
+                    <p><strong>Страна:</strong> ${country}</p>
+                    <p><strong>Широта:</strong> ${latitude}</p>
+                    <p><strong>Долгота:</strong> ${longitude}</p>
+                    <p><strong>Часовой пояс:</strong> ${timezone}, ${utc_offset}</p>
+                </div>
+                ${renderWeatherBlock("Текущая погода", current)}
+                ${renderWeatherBlock("Прогноз погоды через 3 часа", data.forecast_3h, currentTime, 3)}
+                ${renderWeatherBlock("Прогноз погоды через 6 часов", data.forecast_6h, currentTime, 6)}
+            `;
+
+            // Сохраняем город в localStorage
+            localStorage.setItem('lastCity', city);
+        })
+        .catch(err => {
+            resultDiv.innerHTML = `<div class="error">Ошибка при загрузке данных</div>`;
+            console.error(err);
+        });
+}
+
+// Функция для проверки ввода
+function isValidCityInput(city) {
+    // Проверка на наличие чисел в названии города
+    const regex = /\d/;
+    return !regex.test(city);
+}
+
+document.getElementById("weather-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const city = input.value.trim();
+
+    // Проверка на ввод чисел
+    if (!isValidCityInput(city)) {
+        alert("Название города не должно содержать чисел.");
+        return;
+    }
+
+    suggestions.style.display = "none";
+    fetchWeather(city);
+});
+</script>
+
+</body>
+</html>
